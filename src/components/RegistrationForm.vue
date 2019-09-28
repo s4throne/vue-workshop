@@ -5,18 +5,20 @@
         <h4 class="title">Register to create a new account</h4>
       </div>
       <div class="content">
-        <form>
+        <form @submit.prevent="handelSubmit">
+          <div class="alert-success" v-if="successMessage">{{successMessage}}</div>
           <div class="form-group">
             <label class="label" for="name">Name</label>
-            <input type="text" class="form-control" id="name" placeholder="name" required />
+            <input v-model="name" type="text" class="form-control" id="name" placeholder="name" required />
           </div>
           <div class="form-group">
             <label class="label" for="email">Email address</label>
-            <input type="email" class="form-control" id="email" placeholder="email" required />
+            <input v-model="email" type="email" class="form-control" id="email" placeholder="email" required />
           </div>
           <div class="form-group">
             <label class="label" for="password">Password</label>
             <input
+              v-model="word"
               type="password"
               class="form-control"
               id="password"
@@ -33,8 +35,37 @@
 </template>
 
 <script>
+import axios from "axios";
 export default {
-  name: "RegistrationForm"
+  name: "RegistrationForm",
+  data(){
+    return{
+      name: "",
+      word: "",
+      email: "",
+      successMessage: ""
+    };
+  },
+  methods:{
+    async handelSubmit(){
+      try{
+        const response = await axios.post('https://jsonplaceholder.typicode.com/posts',{
+          name: this.name,
+          email: this.email,
+          word: this.word
+        });
+        if(response){
+          this.name= "";
+          this.email= "";
+          this.word= "";
+          this.successMessage = "You form has been submitted successfully";
+        }
+        console.log(response);
+      }catch(error){
+        console.log(error.message);
+      }
+    }
+  }
 };
 </script>
 
@@ -89,5 +120,9 @@ export default {
     background-color: #0069d9;
     border-color: #0062cc;
   }
+}
+
+.alert-success{
+  background : lighten(green,50%);
 }
 </style>
