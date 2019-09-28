@@ -58,7 +58,7 @@ export default {
           this.name= "";
           this.email= "";
           this.word= "";
-          this.successMessage = "You form has been submitted successfully";
+          this.successMessage = "You form has been submitted successfully.";
         }
         console.log(response);
       }catch(error){
@@ -124,5 +124,11 @@ export default {
 
 .alert-success{
   background : lighten(green,50%);
+  height: 35px;
+  text-align: center;
+  padding-top: 2%;
+  font-weight: 700;
+  border-radius: 8px;
+  margin-bottom: 8px;
 }
 </style>
