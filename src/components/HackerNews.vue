@@ -2,13 +2,13 @@
   <div class="container">
     <div class="card">
       <div class="heading">
-        <h4 class="title">Netflix Ratings</h4>
+        <h4 class="title">Hacker News</h4>
       </div>
       <div class="search">
-        <input type="text" class="form-control" placeholder="Search by title" />
+        <input v-model="title" type="text" class="form-control" placeholder="Search by title" />
       </div>
       <div class="content">
-        <div>
+        <div v-if="!news.length">
           <p>Loading news</p>
         </div>
         <div>
@@ -16,9 +16,14 @@
             <p></p>
           </div>
           <ul class="list">
-            <li>
-              <a href></a>
-              <span>By:</span>
+            <li v-for="(item,index) in news" :key="index">
+              <template v-if="item.title">
+                <a v-bind:href=item.url>{{item.title}}</a>
+                
+                  <span>By: {{item.author}}</span>
+                  <span>Created At: {{item.created_at}}</span>
+                
+              </template>
             </li>
           </ul>
         </div>
@@ -28,12 +33,46 @@
 </template>
 
 <script>
+import axios from "axios";
 export default {
-  name: "HackerNews"
+  name: "HackerNews",
+  data(){
+    return{
+      news : [],
+      title : ""
+    };
+  },
+  async created(){
+    try{
+      const response = await axios.get("http://hn.algolia.com/api/v1/search");
+      this.news = response.data.hits;
+      console.log(this.news);
+    }catch(error){
+
+    }
+  },
+  watch: {
+    async title(value){
+      try{
+      const response = await axios.get("http://hn.algolia.com/api/v1/search",{
+        params : {
+          query : value
+        }
+      });
+      this.news = response.data.hits;
+      
+      }catch(error){
+
+      }
+    }
+  }
 };
 </script>
 
 <style scoped lang="scss">
+a{
+  text-decoration: none;
+}
 .container {
   margin: 0 auto;
   max-width: 768px;
